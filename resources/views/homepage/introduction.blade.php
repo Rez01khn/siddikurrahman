@@ -1,0 +1,7 @@
+<section id="introduction" class="section-space shell reveal">
+    <div class="grid lg:grid-cols-[1fr_2fr] gap-8 lg:gap-20">
+        <p class="eyebrow text-forest pt-3">{{ $section->text('eyebrow') }}</p>
+        <div>@if($section->hasImage())<figure class="mb-8 image-wrap"><img src="{{ $section->imageUrl() }}" alt="{{ $section->text('image_alt') }}" class="w-full h-64 object-cover" loading="lazy"></figure>@endif<h2 class="font-display uppercase text-5xl md:text-7xl leading-[1.02] text-forest">{{ $section->text('title') }}<br><span class="text-[#7a8070]">{{ $section->text('subtitle') }}</span></h2><div class="grid md:grid-cols-2 gap-8 mt-9"><p class="text-sm leading-7 text-ink/70">{{ $section->text('description') }}</p><div><p class="text-sm leading-7 text-ink/70 mb-6">{{ $section->text('second_paragraph') }}</p><a href="{{ $section->buttonUrl($visibleAnchors) }}" class="editorial-link text-forest">{{ $section->text('button_text') }} <span>↗</span></a></div></div></div>
+    </div>
+    @if($featuredEquipment->isNotEmpty() || $featuredTips->isNotEmpty())<div class="flex flex-wrap gap-x-9 gap-y-4 mt-9 text-sm text-forest">@foreach($featuredEquipment as $item)<a class="underline underline-offset-4" href="{{ route('in-the-bag') }}#item-{{ $item->slug }}">In the bag: {{ $item->title }} ↗</a>@endforeach @foreach($featuredTips as $tip)<a class="underline underline-offset-4" href="{{ route('coaching-tips.show',$tip->slug) }}">Coaching: {{ $tip->title }} ↗</a>@endforeach</div>@endif
+</section>

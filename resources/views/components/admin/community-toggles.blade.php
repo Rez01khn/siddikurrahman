@@ -1,0 +1,2 @@
+@props(['record','module'])
+<div class="flex flex-wrap gap-4">@foreach(['is_published'=>($record->is_published?'Unpublish':'Publish'),'is_featured'=>($record->is_featured?'Unfeature':'Feature')] as $field=>$label)<form method="POST" action="{{ route('admin.'.$module.'.toggle',$record) }}">@csrf @method('PATCH')<input type="hidden" name="field" value="{{ $field }}"><button class="text-xs underline text-forest">{{ $label }}</button></form>@endforeach</div>

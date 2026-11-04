@@ -1,0 +1,12 @@
+:root { color-scheme: light; }
+body { margin: 0; font-family: ui-sans-serif, system-ui, sans-serif; }
+*, *::before, *::after { box-sizing: border-box; }
+button, summary { cursor: pointer; }
+:focus-visible { outline: 3px solid #C6A667; outline-offset: 4px; }
+[hidden] { display: none !important; }
+.skip-link { position: fixed; top: -100px; left: 20px; z-index: 100; padding: 12px; background: #F5F3EC; color: #12372B; }
+.skip-link:focus { top: 12px; }
+summary::-webkit-details-marker { display: none; }
+.sidebar-open { overflow: hidden; }
+@media (min-width: 1024px) { .sidebar-open { overflow: auto; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }

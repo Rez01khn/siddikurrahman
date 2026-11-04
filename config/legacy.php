@@ -1,0 +1,4 @@
+<?php
+
+return ['tables' => ['homepage_sections', 'biographies', 'career_milestones', 'achievements', 'career_statistics', 'tournaments', 'tournament_results', 'news_categories', 'articles', 'photo_albums', 'photos', 'videos', 'sponsors', 'social_works', 'social_work_images', 'equipment', 'coaching_tips', 'website_settings'],
+    'identities' => ['homepage_sections' => ['section_key'], 'biographies' => ['full_name'], 'career_milestones' => ['title', 'year'], 'achievements' => ['title', 'year', 'category'], 'career_statistics' => ['label'], 'tournaments' => ['name', 'start_date'], 'tournament_results' => ['tournament_id'], 'news_categories' => ['slug'], 'articles' => ['slug'], 'photo_albums' => ['slug'], 'photos' => ['photo_album_id', 'image'], 'videos' => ['slug'], 'sponsors' => ['slug'], 'social_works' => ['slug'], 'social_work_images' => ['social_work_id', 'image'], 'equipment' => ['slug'], 'coaching_tips' => ['slug']]];

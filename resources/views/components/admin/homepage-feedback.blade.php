@@ -1,0 +1,3 @@
+@if(session('status'))<p role="status" class="mb-6 p-4 bg-forest/10 border border-forest/20 rounded-lg text-sm text-forest">{{ session('status') }}</p>@endif
+@if(session('warning'))<p role="alert" class="mb-6 p-4 bg-amber-50 border border-amber-300 rounded-lg text-sm text-amber-900">{{ session('warning') }}</p>@endif
+@if($errors->any())<div role="alert" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800"><p class="font-semibold">Please check the following:</p><ul class="mt-2 list-disc pl-5 space-y-1">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif

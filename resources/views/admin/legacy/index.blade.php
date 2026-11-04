@@ -1,0 +1,4 @@
+@extends('layouts.admin')
+@section('content')
+<h1 class="font-serif text-3xl text-forest mb-6">Legacy content review</h1><p class="text-sm text-slate-500 leading-7 mb-8">Original source data is preserved in full. New records remain drafts; missing images, conflicting profile facts and incomplete links require review. No original information is silently discarded.</p>@forelse($batches as $batch)<article class="bg-white border border-forest/10 rounded-xl p-6 mb-6"><a class="underline text-forest text-lg" href="{{ route('admin.legacy-imports.show',$batch) }}">{{ $batch->original_filename }}</a><p class="text-sm text-slate-500 mt-4">{{ $batch->summary['entries']??0 }} source entries · {{ $batch->summary['created']??0 }} draft records · {{ $batch->summary['review']??0 }} review entries</p></article>@empty<p>No imported source yet.</p>@endforelse {{ $batches->links() }}
+@endsection

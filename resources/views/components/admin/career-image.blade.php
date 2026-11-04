@@ -1,0 +1,7 @@
+@props(['record', 'minDimension' => 100, 'maxDimension' => 6000, 'accept' => 'image/jpeg,image/png,image/webp', 'fileTypes' => 'JPEG, PNG or WebP', 'maxSizeLabel' => '5 MB', 'field' => 'image', 'label' => 'Image', 'emptyMessage' => 'No approved image supplied. No stock athlete portrait is substituted.'])
+<div class="space-y-3"><label for="{{ $field }}" class="block text-sm font-medium">{{ $label }}</label>
+@if($record->imageUrl($field))<img src="{{ $record->imageUrl($field) }}" alt="Current {{ $label }} preview" class="w-full max-w-lg h-56 object-cover rounded-lg">@else<p class="text-sm text-slate-500">{{ $emptyMessage }}</p>@endif
+<input id="{{ $field }}" type="file" name="{{ $field }}" accept="{{ $accept }}" data-image-upload class="block w-full text-sm border border-forest/25 rounded-lg p-3">
+<p id="{{ $field }}-preview-status" role="status" class="text-xs text-slate-500"></p><img id="{{ $field }}-preview" alt="Selected image preview" class="w-full max-w-lg h-56 object-contain" hidden>
+@if($record->imageUrl($field))<label class="flex items-center gap-3 text-sm"><input type="checkbox" name="remove_{{ $field }}" value="1" @checked(old('remove_'.$field))>Remove current image</label>@endif
+<p class="text-xs text-slate-500">{{ $fileTypes }}; maximum {{ $maxSizeLabel }}; {{ $minDimension }}–{{ $maxDimension }} pixels per side. A replacement takes priority over removal.</p></div>

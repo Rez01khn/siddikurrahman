@@ -1,0 +1,8 @@
+@props(['result'])
+@if($result)
+<div class="border border-forest/20 bg-white rounded-xl p-5 sm:p-7 text-ink"><p class="eyebrow text-forest/65 mb-5">{{ config('tournaments.result_statuses.'.$result->status) }}</p><dl class="grid sm:grid-cols-3 gap-6"><div><dt class="text-xs text-ink/60">Final position</dt><dd class="font-display text-4xl text-forest mt-2">{{ $result->final_position ?? '—' }}</dd></div><div><dt class="text-xs text-ink/60">Total score</dt><dd class="font-display text-4xl text-forest mt-2">{{ $result->total_score ?? '—' }}</dd></div><div><dt class="text-xs text-ink/60">Relative to par</dt><dd class="font-display text-4xl text-forest mt-2">{{ $result->parLabel() ?? '—' }}</dd></div></dl>
+<div class="overflow-x-auto mt-8"><table class="w-full text-sm text-left"><caption class="text-left text-xs text-ink/60 mb-3">Reported round scores · missing scores are not inferred</caption><thead class="border-y border-forest/15"><tr>@foreach([1,2,3,4] as $round)<th scope="col" class="p-3">Round {{ $round }}</th>@endforeach</tr></thead><tbody><tr>@foreach([1,2,3,4] as $round)<td class="p-3">{{ $result->{'round_'.$round} ?? '—' }}</td>@endforeach</tr></tbody></table></div>
+@if($result->prize_amount !== null)<p class="text-sm mt-6"><span class="text-ink/60">Reported player winnings:</span> {{ $result->prize_currency }} {{ $result->prize_amount }}</p>@endif
+@if($result->notes)<p class="text-sm text-ink/75 whitespace-pre-line leading-7 mt-6">{{ $result->notes }}</p>@endif
+<div class="mt-6"><x-tournaments.external-link :url="$result->source_url" label="Result source" class="text-forest" /></div></div>
+@else<p class="text-sm text-ink/65 border-t border-forest/20 pt-6">No published result is available. Scores and winnings have not been inferred.</p>@endif
