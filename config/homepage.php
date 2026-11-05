@@ -5,7 +5,7 @@ return [
         'label' => 'Hero',
         'anchor' => 'top',
         'image_enabled' => true,
-        'fallback_image' => 'images/fairway.jpg',
+        'fallback_image' => 'images/portfolio/hero-golfer.jpg',
         'secondary_image_enabled' => false,
         'fallback_secondary_image' => null,
         'defaults' => [
@@ -89,7 +89,7 @@ return [
         'label' => 'Biography Preview',
         'anchor' => 'journey',
         'image_enabled' => true,
-        'fallback_image' => 'images/course.jpg',
+        'fallback_image' => 'images/portfolio/about-portrait.jpg',
         'secondary_image_enabled' => false,
         'fallback_secondary_image' => null,
         'defaults' => [
@@ -150,9 +150,9 @@ return [
         'label' => 'News & Results Preview',
         'anchor' => 'journal',
         'image_enabled' => true,
-        'fallback_image' => 'images/fairway.jpg',
+        'fallback_image' => 'images/portfolio/hero-golfer.jpg',
         'secondary_image_enabled' => true,
-        'fallback_secondary_image' => 'images/landscape.jpg',
+        'fallback_secondary_image' => 'images/portfolio/beyond-fishing.jpg',
         'defaults' => [
             'section_key' => 'journal',
             'title' => 'Inside the ropes.',
@@ -183,9 +183,9 @@ return [
         'label' => 'Media Preview',
         'anchor' => 'media',
         'image_enabled' => true,
-        'fallback_image' => 'images/fairway.jpg',
+        'fallback_image' => 'images/portfolio/hero-golfer.jpg',
         'secondary_image_enabled' => true,
-        'fallback_secondary_image' => 'images/course.jpg',
+        'fallback_secondary_image' => 'images/portfolio/gallery-1.jpg',
         'defaults' => [
             'section_key' => 'media',
             'title' => 'The game. In focus.',
@@ -239,7 +239,7 @@ return [
         'label' => 'Community Section',
         'anchor' => 'community',
         'image_enabled' => true,
-        'fallback_image' => 'images/landscape.jpg',
+        'fallback_image' => 'images/portfolio/beyond-fishing.jpg',
         'secondary_image_enabled' => false,
         'fallback_secondary_image' => null,
         'defaults' => [

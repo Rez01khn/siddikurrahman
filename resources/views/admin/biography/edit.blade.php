@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('content')
 <x-admin.career-nav />
-<div class="flex flex-wrap justify-between gap-4 mb-7"><h1 class="font-serif text-3xl text-forest">The person behind the game.</h1><a href="{{ route('biography') }}" target="_blank" rel="noopener" class="text-sm underline text-forest">View biography ↗</a></div>
+<div class="flex flex-wrap justify-between gap-4 mb-7"><h1 class="font-serif text-3xl text-forest">The person behind the game.</h1><a href="{{ route('home') }}#about" target="_blank" rel="noopener" class="text-sm underline text-forest">View on homepage ↗</a></div>
 <x-admin.homepage-feedback />
 <p class="text-sm text-slate-500 leading-7 mb-6">One official profile. All content is plain text, with paragraph breaks preserved. Leave unknown facts empty. Publishing requires a source note; publishing is your confirmation that the supplied facts have been reviewed.</p>
 <form action="{{ route('admin.biography.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">@csrf @method('PUT')

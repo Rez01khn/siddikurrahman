@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BiographyController;
 use App\Http\Controllers\Admin\CareerRecordController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -14,43 +15,34 @@ use App\Http\Controllers\Admin\PhotoController;
 use App\Http\Controllers\Admin\SocialWorkController;
 use App\Http\Controllers\Admin\SocialWorkImageController;
 use App\Http\Controllers\Admin\SponsorController;
+use App\Http\Controllers\Admin\TournamentController;
 use App\Http\Controllers\Admin\TournamentResultController;
 use App\Http\Controllers\Admin\TrainingContentController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VideoController;
 use App\Http\Controllers\Admin\WebsiteSettingController;
-use App\Http\Controllers\BiographyController;
-use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\NewsController;
 use App\Http\Controllers\SeoController;
-use App\Http\Controllers\TournamentController;
-use App\Http\Controllers\TrainingController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/in-the-bag', [TrainingController::class, 'equipment'])->name('in-the-bag');
-Route::get('/coaching-tips', [TrainingController::class, 'tips'])->name('coaching-tips.index');
-Route::get('/coaching-tips/{tip:slug}', [TrainingController::class, 'tip'])->name('coaching-tips.show');
-Route::get('/contact', [ContactController::class, 'create'])->name('contact');
+/*
+|--------------------------------------------------------------------------
+| Frontend Single-Page Portfolio Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/', HomeController::class)->name('home');
+Route::get('/about', AboutController::class)->name('about');
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:contact')->name('contact.store');
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
-Route::get('/', HomeController::class)->name('home');
-Route::get('/biography', BiographyController::class)->name('biography');
-Route::get('/sponsors', [CommunityController::class, 'sponsors'])->name('sponsors.index');
-Route::get('/social-works', [CommunityController::class, 'projects'])->name('social-works.index');
-Route::get('/social-works/{social_work:slug}', [CommunityController::class, 'project'])->name('social-works.show');
-Route::get('/photos', [GalleryController::class, 'photos'])->name('photos.index');
-Route::get('/photos/{album:slug}', [GalleryController::class, 'album'])->name('photos.show');
-Route::get('/videos', [GalleryController::class, 'videos'])->name('videos.index');
-Route::get('/videos/{video:slug}', [GalleryController::class, 'video'])->name('videos.show');
-Route::get('/news', [NewsController::class, 'index'])->name('news.index');
-Route::get('/news/{article:slug}', [NewsController::class, 'show'])->name('news.show');
-Route::get('/tournaments', [TournamentController::class, 'index'])->name('tournaments.index');
-Route::get('/tournaments/{tournament}', [TournamentController::class, 'show'])->whereNumber('tournament')->name('tournaments.show');
 
+/*
+|--------------------------------------------------------------------------
+| Admin Panel Routes
+|--------------------------------------------------------------------------
+*/
 Route::prefix('admin')->name('admin.')->group(function (): void {
     Route::middleware('guest:web')->group(function (): void {
         Route::get('/login', [AuthController::class, 'create'])->name('login');
@@ -102,8 +94,8 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::resource('news-categories', NewsCategoryController::class)->except('show');
         Route::resource('news', ArticleController::class)->parameters(['news' => 'article'])->except('show');
         Route::get('/news/{article}/preview', [ArticleController::class, 'preview'])->name('news.preview');
-        Route::resource('tournaments', App\Http\Controllers\Admin\TournamentController::class);
-        Route::patch('/tournaments/{tournament}/toggle', [App\Http\Controllers\Admin\TournamentController::class, 'toggle'])->name('tournaments.toggle');
+        Route::resource('tournaments', TournamentController::class);
+        Route::patch('/tournaments/{tournament}/toggle', [TournamentController::class, 'toggle'])->name('tournaments.toggle');
         Route::get('/tournament-results', [TournamentResultController::class, 'index'])->name('tournament-results.index');
         Route::prefix('tournaments/{tournament}/result')->name('tournaments.result.')->group(function (): void {
             $controller = TournamentResultController::class;
@@ -113,8 +105,8 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
             Route::delete('/', [$controller, 'destroy'])->name('destroy');
             Route::patch('/toggle', [$controller, 'toggle'])->name('toggle');
         });
-        Route::get('/biography', [App\Http\Controllers\Admin\BiographyController::class, 'edit'])->name('biography.edit');
-        Route::put('/biography', [App\Http\Controllers\Admin\BiographyController::class, 'update'])->name('biography.update');
+        Route::get('/biography', [BiographyController::class, 'edit'])->name('biography.edit');
+        Route::put('/biography', [BiographyController::class, 'update'])->name('biography.update');
         foreach (['milestones', 'achievements', 'statistics'] as $type) {
             Route::prefix($type)->name($type.'.')->group(function () use ($type): void {
                 $controller = CareerRecordController::class;

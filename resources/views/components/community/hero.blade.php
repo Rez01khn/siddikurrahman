@@ -1,2 +1,0 @@
-@props(['title','eyebrow'])
-<section id="top" class="bg-forest text-white pt-44 pb-20"><div class="shell"><p class="eyebrow text-gold mb-7">{{ $eyebrow }}</p><h1 class="font-display text-6xl md:text-8xl uppercase leading-[.95]">{{ $title }}</h1><nav class="flex flex-wrap gap-7 mt-9 text-sm" aria-label="Partners and community"><a href="{{ route('sponsors.index') }}">Sponsors ↗</a><a href="{{ route('social-works.index') }}">Social works ↗</a></nav></div></section>
