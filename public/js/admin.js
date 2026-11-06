@@ -3,32 +3,107 @@
     const toggle = document.querySelector('#sidebar-toggle');
     const backdrop = document.querySelector('#sidebar-backdrop');
     const close = document.querySelector('#sidebar-close');
-    if (sidebar && toggle && backdrop && close) {
-        const setOpen = (open, restoreFocus = false) => {
-            sidebar.classList.toggle('-translate-x-full', !open);
-            backdrop.hidden = !open;
-            toggle.setAttribute('aria-expanded', String(open));
-            document.body.classList.toggle('sidebar-open', open);
-            sidebar.inert = !open && !window.matchMedia('(min-width: 1024px)').matches;
-            if (open) close.focus();
-            else if (restoreFocus) toggle.focus();
+    const offBtn = document.querySelector('#sidebar-off-btn');
+    const statusText = document.querySelector('#topbar-sidebar-status');
+
+    if (sidebar) {
+        const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
+
+        // Restore saved preference on desktop
+        if (isDesktop() && localStorage.getItem('sr_admin_sidebar_collapsed') === '1') {
+            document.body.classList.add('sidebar-collapsed');
+        }
+
+        const updateStatusText = () => {
+            if (!statusText) return;
+            const isOff = isDesktop()
+                ? document.body.classList.contains('sidebar-collapsed')
+                : sidebar.classList.contains('-translate-x-full');
+            statusText.textContent = isOff ? 'OFF' : 'ON';
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', String(!isOff));
+            }
         };
-        toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
-        close.addEventListener('click', () => setOpen(false, true));
-        backdrop.addEventListener('click', () => setOpen(false, true));
+
+        const turnOff = () => {
+            if (isDesktop()) {
+                document.body.classList.add('sidebar-collapsed');
+                localStorage.setItem('sr_admin_sidebar_collapsed', '1');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                if (backdrop) backdrop.hidden = true;
+                document.body.classList.remove('sidebar-open');
+            }
+            updateStatusText();
+        };
+
+        const turnOn = () => {
+            if (isDesktop()) {
+                document.body.classList.remove('sidebar-collapsed');
+                localStorage.setItem('sr_admin_sidebar_collapsed', '0');
+            } else {
+                sidebar.classList.remove('-translate-x-full');
+                if (backdrop) backdrop.hidden = false;
+                document.body.classList.add('sidebar-open');
+            }
+            updateStatusText();
+        };
+
+        const toggleSidebar = () => {
+            const isCurrentlyOff = isDesktop()
+                ? document.body.classList.contains('sidebar-collapsed')
+                : sidebar.classList.contains('-translate-x-full');
+            if (isCurrentlyOff) {
+                turnOn();
+            } else {
+                turnOff();
+            }
+        };
+
+        if (offBtn) {
+            offBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                turnOff();
+            });
+        }
+
+        if (toggle) {
+            toggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleSidebar();
+            });
+        }
+
+        if (close) {
+            close.addEventListener('click', turnOff);
+        }
+
+        if (backdrop) {
+            backdrop.addEventListener('click', turnOff);
+        }
+
         document.addEventListener('keydown', event => {
-            if (backdrop.hidden) return;
-            if (event.key === 'Escape') setOpen(false, true);
-            if (event.key === 'Tab') {
-                const focusable = [...sidebar.querySelectorAll('a,button')].filter(element => element.getClientRects().length);
-                const first = focusable[0];
-                const last = focusable[focusable.length - 1];
-                if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-                else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+            if (event.key === 'Escape') {
+                if (backdrop && !backdrop.hidden) turnOff();
             }
         });
-        window.matchMedia('(min-width: 1024px)').addEventListener('change', () => setOpen(false));
-        setOpen(false);
+
+        window.matchMedia('(min-width: 1024px)').addEventListener('change', () => {
+            if (isDesktop()) {
+                if (backdrop) backdrop.hidden = true;
+                document.body.classList.remove('sidebar-open');
+                if (localStorage.getItem('sr_admin_sidebar_collapsed') === '1') {
+                    document.body.classList.add('sidebar-collapsed');
+                } else {
+                    document.body.classList.remove('sidebar-collapsed');
+                }
+            } else {
+                sidebar.classList.add('-translate-x-full');
+            }
+            updateStatusText();
+        });
+
+        updateStatusText();
     }
     const profile = document.querySelector('#profile-menu');
     if (profile) {

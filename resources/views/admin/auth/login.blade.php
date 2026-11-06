@@ -14,7 +14,7 @@
             @if($errors->any())<div role="alert" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800"><p class="font-semibold">Unable to sign in</p><ul class="mt-2 space-y-1">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
             <form method="POST" action="{{ route('admin.login.store') }}" class="space-y-6">
                 @csrf
-                <div><label for="email" class="block text-sm font-medium mb-2">Email address</label><input id="email" name="email" type="email" value="{{ old('email') }}" required autocomplete="username" maxlength="254" autofocus @error('email') aria-invalid="true" @enderror class="w-full rounded-lg border border-forest/25 bg-white px-4 py-3.5 text-base"></div>
+                <div><label for="email" class="block text-sm font-medium mb-2">Username or Email</label><input id="email" name="email" type="text" value="{{ old('email') }}" required autocomplete="username" maxlength="254" autofocus placeholder="admin" @error('email') aria-invalid="true" @enderror class="w-full rounded-lg border border-forest/25 bg-white px-4 py-3.5 text-base"></div>
                 <div><label for="password" class="block text-sm font-medium mb-2">Password</label><input id="password" name="password" type="password" required autocomplete="current-password" maxlength="1024" @error('password') aria-invalid="true" @enderror class="w-full rounded-lg border border-forest/25 bg-white px-4 py-3.5 text-base"></div>
                 <button type="submit" class="w-full bg-forest text-white rounded-lg py-4 px-5 text-sm font-semibold flex justify-between hover:bg-forest/90">Sign in to dashboard <span aria-hidden="true">↗</span></button>
             </form>

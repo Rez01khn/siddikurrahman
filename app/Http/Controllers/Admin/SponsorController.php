@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SaveSponsorRequest;
 use App\Http\Requests\CommunityFilterRequest;
 use App\Models\Sponsor;
-use App\Services\CommunityWriter;
+use App\Services\CareerContentWriter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,8 +32,11 @@ class SponsorController extends Controller
             $q->where('is_featured', $f['featured'] === 'yes');
         }
 
-        return view('admin.community.sponsors', ['title' => 'Sponsors', 'sponsors' => $q->orderBy('sort_order')->orderBy('id')->paginate(15)->withQueryString(),
-            'categories' => Sponsor::whereNotNull('category')->distinct()->orderBy('category')->pluck('category')]);
+        return view('admin.sponsors.index', [
+            'title' => 'Sponsors & Partners',
+            'sponsors' => $q->orderBy('sort_order')->orderBy('id')->paginate(15)->withQueryString(),
+            'categories' => Sponsor::whereNotNull('category')->distinct()->orderBy('category')->pluck('category'),
+        ]);
     }
 
     public function create(): View
@@ -48,23 +51,23 @@ class SponsorController extends Controller
 
     private function form(Sponsor $sponsor): View
     {
-        return view('admin.community.sponsor-form', ['title' => 'Sponsor', 'sponsor' => $sponsor]);
+        return view('admin.sponsors.form', ['title' => 'Sponsor', 'sponsor' => $sponsor]);
     }
 
-    public function store(SaveSponsorRequest $request, CommunityWriter $writer): RedirectResponse
+    public function store(SaveSponsorRequest $request, CareerContentWriter $writer): RedirectResponse
     {
         return $this->persist($request, new Sponsor, $writer);
     }
 
-    public function update(SaveSponsorRequest $request, Sponsor $sponsor, CommunityWriter $writer): RedirectResponse
+    public function update(SaveSponsorRequest $request, Sponsor $sponsor, CareerContentWriter $writer): RedirectResponse
     {
         return $this->persist($request, $sponsor, $writer);
     }
 
-    private function persist(SaveSponsorRequest $request, Sponsor $sponsor, CommunityWriter $writer): RedirectResponse
+    private function persist(SaveSponsorRequest $request, Sponsor $sponsor, CareerContentWriter $writer): RedirectResponse
     {
         try {
-            $ok = $writer->save($sponsor, $request->safe()->except(['logo', 'remove_logo']), $request, 'logo');
+            $ok = $writer->save($sponsor, $request->safe()->except(['logo', 'remove_logo']), $request, ['logo'], 'sponsors');
         } catch (Throwable $e) {
             report($e);
 
@@ -85,10 +88,10 @@ class SponsorController extends Controller
         return back()->with('status', 'Sponsor flag updated.');
     }
 
-    public function destroy(Sponsor $sponsor, CommunityWriter $writer): RedirectResponse
+    public function destroy(Sponsor $sponsor, CareerContentWriter $writer): RedirectResponse
     {
         try {
-            $ok = $writer->delete($sponsor);
+            $ok = $writer->delete($sponsor, ['logo']);
         } catch (Throwable $e) {
             report($e);
 

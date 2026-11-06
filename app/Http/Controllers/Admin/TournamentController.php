@@ -18,7 +18,7 @@ class TournamentController extends Controller
 {
     public function index(TournamentFilterRequest $request): View
     {
-        $query = Tournament::with('result')->matching($request->validated());
+        $query = Tournament::matching($request->validated());
         if ($publication = $request->validated('publication')) {
             $query->where('is_published', $publication === 'published');
         }
@@ -55,8 +55,18 @@ class TournamentController extends Controller
 
     private function persist(SaveTournamentRequest $request, Tournament $tournament, CareerContentWriter $writer): RedirectResponse
     {
+        $data = $request->safe()->except(['image', 'remove_image']);
+        if (! isset($data['sort_order']) || $data['sort_order'] === null) {
+            $data['sort_order'] = $tournament->exists ? $tournament->sort_order : ((int) Tournament::max('sort_order') + 1);
+        }
+        if (! isset($data['is_published'])) {
+            $data['is_published'] = $tournament->exists ? $tournament->is_published : true;
+        }
+        if (! isset($data['is_featured'])) {
+            $data['is_featured'] = $tournament->exists ? $tournament->is_featured : false;
+        }
         try {
-            $cleaned = $writer->save($tournament, $request->safe()->except(['image', 'remove_image']), $request, ['image'], 'tournaments');
+            $cleaned = $writer->save($tournament, $data, $request, ['image'], 'tournaments');
         } catch (Throwable $exception) {
             report($exception);
 

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Achievement;
+use App\Models\Biography;
+use App\Models\WebsiteSetting;
 use Illuminate\View\View;
 
 class AboutController extends Controller
@@ -17,9 +20,15 @@ class AboutController extends Controller
             }
         }
 
+        $biography = Biography::find(1);
+        $siteSettings = WebsiteSetting::find(1);
+        $achievements = Achievement::where('is_published', true)->orderBy('sort_order')->orderBy('id')->get();
+
         return view('about', [
             'theme' => $theme,
+            'biography' => $biography,
+            'siteSettings' => $siteSettings,
+            'achievements' => $achievements,
         ]);
     }
 }
-

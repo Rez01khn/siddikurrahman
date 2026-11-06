@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Models\Achievement;
-use App\Models\Article;
 use App\Models\Biography;
 use App\Models\CareerMilestone;
+use App\Models\Sponsor;
 use App\Models\Tournament;
 use App\Models\WebsiteSetting;
 use Illuminate\Database\Eloquent\Model;
@@ -82,7 +82,7 @@ class CareerContentWriter
         $cleaned = true;
         foreach ($paths as $path) {
             try {
-                $references = [Biography::class => ['profile_image', 'banner_image'], CareerMilestone::class => ['image'], Achievement::class => ['image'], Article::class => ['image'], Tournament::class => ['image'], WebsiteSetting::class => ['logo', 'favicon']];
+                $references = [Biography::class => ['profile_image', 'banner_image'], CareerMilestone::class => ['image'], Achievement::class => ['image'], Sponsor::class => ['logo'], Tournament::class => ['image'], WebsiteSetting::class => ['logo', 'favicon']];
                 $managed = false;
                 $shared = false;
                 foreach ($references as $model => $fields) {

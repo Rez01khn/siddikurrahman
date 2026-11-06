@@ -1,13 +1,53 @@
 @extends('layouts.admin')
 @section('content')
-<x-admin.tournament-nav /><h1 class="font-serif text-3xl text-forest mb-7">{{ $title }}</h1><x-admin.homepage-feedback />
-<form action="{{ $tournament->exists ? route('admin.tournaments.update', $tournament) : route('admin.tournaments.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">@csrf @if($tournament->exists) @method('PUT') @endif
-<section class="bg-white border border-forest/10 rounded-xl p-5 sm:p-7 space-y-6"><x-admin.career-field name="name" label="Tournament name" :value="$tournament->name" :maxlength="255" required /><x-admin.career-field name="tour" label="Series / tour" :value="$tournament->tour" :maxlength="255" /><div class="grid md:grid-cols-2 gap-6"><x-admin.career-field name="venue" label="Venue" :value="$tournament->venue" :maxlength="255" /><x-admin.career-field name="city" label="City" :value="$tournament->city" :maxlength="255" /><x-admin.career-field name="country" label="Country" :value="$tournament->country" :maxlength="255" /></div>
-<div class="grid sm:grid-cols-2 gap-6"><x-admin.career-field name="start_date" label="Start date" type="date" :value="$tournament->start_date?->format('Y-m-d')" required /><x-admin.career-field name="end_date" label="End date" type="date" :value="$tournament->end_date?->format('Y-m-d')" required /></div>
-<x-admin.career-field name="tournament_purse_amount" label="Tournament purse amount (not player winnings)" :value="$tournament->tournament_purse_amount" :maxlength="18" /><x-admin.career-field name="tournament_purse_currency" label="Purse currency (uppercase ISO code)" :value="$tournament->tournament_purse_currency" :maxlength="3" /><x-admin.career-field name="description" label="Tournament description" type="textarea" :value="$tournament->description" :maxlength="10000" /><x-admin.career-field name="official_url" label="Official tournament URL (http/https)" :value="$tournament->official_url" :maxlength="2048" /><x-admin.career-field name="source_url" label="Historical / verification source URL (optional)" :value="$tournament->source_url" :maxlength="2048" />
-</section><section class="bg-white border border-forest/10 rounded-xl p-5 sm:p-7 space-y-6"><x-admin.career-image :record="$tournament" label="Featured tournament image" empty-message="No tournament photograph supplied." /><x-admin.career-field name="image_alt" label="Image description / caption" :value="$tournament->image_alt" :maxlength="255" /></section>
-<section class="bg-white border border-forest/10 rounded-xl p-5 sm:p-7 space-y-6"><label class="block text-sm font-medium">Tournament status<select name="status" required class="block w-full border border-forest/25 rounded-lg p-3 mt-2">@foreach(config('tournaments.statuses') as $key => $label)<option value="{{ $key }}" @selected(old('status', $tournament->status) === $key)>{{ $label }}</option>@endforeach</select></label><p class="text-xs text-slate-500">Status is editorial and does not change automatically with the date. Keep it accurate when events finish or are cancelled.</p><x-admin.career-field name="sort_order" label="Display order (0–10000)" type="number" :value="$tournament->sort_order" required />
-<input type="hidden" name="is_featured" value="0"><label class="flex gap-3 items-center text-sm"><input type="checkbox" name="is_featured" value="1" @checked(old('is_featured', $tournament->is_featured))>Featured</label><input type="hidden" name="is_published" value="0"><label class="flex gap-3 items-center text-sm"><input type="checkbox" name="is_published" value="1" @checked(old('is_published', $tournament->is_published))>Published (reviewed and approved)</label></section>
-<div class="flex gap-4"><button class="bg-forest text-white rounded-lg px-6 py-3 text-sm">Save tournament</button><a href="{{ route('admin.tournaments.index') }}" class="border border-forest/20 rounded-lg px-6 py-3 text-sm">Cancel</a></div></form>
-@if($tournament->exists)<details class="mt-10 border border-red-200 rounded-xl p-5"><summary class="cursor-pointer text-sm text-red-800">Delete tournament</summary><p class="text-sm text-slate-500 leading-7 my-4">This permanently deletes the tournament, its linked result and its managed image. Unpublish it instead to preserve private history.</p><form method="POST" action="{{ route('admin.tournaments.destroy', $tournament) }}">@csrf @method('DELETE')<button class="border border-red-300 rounded-lg px-5 py-3 text-sm text-red-800">Confirm deletion of tournament and result</button></form></details>@endif
+<div class="mb-6">
+    <a href="{{ route('admin.tournaments.index') }}" class="text-sm underline text-forest">← Back to Tournament Schedule</a>
+    <h1 class="font-serif text-3xl text-forest mt-3">{{ $title }}</h1>
+</div>
+
+<x-admin.homepage-feedback />
+
+<form action="{{ $tournament->exists ? route('admin.tournaments.update', $tournament) : route('admin.tournaments.store') }}" method="POST" class="space-y-6">
+    @csrf
+    @if($tournament->exists) @method('PUT') @endif
+
+    <input type="hidden" name="is_published" value="{{ $tournament->exists ? ($tournament->is_published ? '1' : '0') : '1' }}">
+    <input type="hidden" name="is_featured" value="{{ $tournament->exists ? ($tournament->is_featured ? '1' : '0') : '0' }}">
+    <input type="hidden" name="sort_order" value="{{ $tournament->exists ? $tournament->sort_order : 0 }}">
+
+    <section class="bg-white border border-forest/10 rounded-2xl p-5 sm:p-7 space-y-6 shadow-xs">
+        <x-admin.career-field name="name" label="Tournament name" :value="$tournament->name" :maxlength="255" required />
+        <x-admin.career-field name="tour" label="Series / tour" :value="$tournament->tour" :maxlength="255" />
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <x-admin.career-field name="venue" label="Venue" :value="$tournament->venue" :maxlength="255" />
+            <x-admin.career-field name="city" label="City" :value="$tournament->city" :maxlength="255" />
+            <x-admin.career-field name="country" label="Country" :value="$tournament->country" :maxlength="255" />
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-6">
+            <x-admin.career-field name="start_date" label="Start date" type="date" :value="$tournament->start_date?->format('Y-m-d')" required />
+            <x-admin.career-field name="end_date" label="End date" type="date" :value="$tournament->end_date?->format('Y-m-d')" required />
+        </div>
+
+        <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Tournament status</label>
+            <select name="status" required class="block w-full border border-forest/20 rounded-xl p-3 text-sm outline-none focus:border-forest bg-white">
+                @foreach(config('tournaments.statuses') as $key => $label)
+                    <option value="{{ $key }}" @selected(old('status', $tournament->status) === $key)>{{ $label }}</option>
+                @endforeach
+            </select>
+            <p class="text-xs text-slate-500 mt-1.5">Status indicates whether the tournament is upcoming, ongoing, or completed.</p>
+        </div>
+    </section>
+
+    <div class="flex gap-4">
+        <button type="submit" class="bg-forest hover:bg-forest/90 text-white rounded-xl px-6 py-3 text-sm font-semibold transition shadow-xs">
+            Save tournament
+        </button>
+        <a href="{{ route('admin.tournaments.index') }}" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-xl px-6 py-3 text-sm font-semibold transition shadow-xs">
+            Cancel
+        </a>
+    </div>
+</form>
 @endsection

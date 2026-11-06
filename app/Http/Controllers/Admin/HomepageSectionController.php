@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateHomepageSectionRequest;
 use App\Models\HomepageSection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,8 +19,35 @@ class HomepageSectionController extends Controller
 {
     public function index(): View
     {
+        $hero = HomepageSection::firstOrCreate(
+            ['section_key' => 'hero'],
+            config('homepage.hero.defaults') ?? [
+                'section_key' => 'hero',
+                'title' => "Mohammad\nSiddikur Rahman",
+                'subtitle' => 'Professional Golfer',
+                'description' => "Representing Bangladesh on\nthe global golf stage.",
+                'button_text' => null,
+                'button_url' => null,
+                'is_active' => true,
+                'sort_order' => 10,
+                'additional_data' => ['eyebrow' => 'PROFESSIONAL GOLFER'],
+            ]
+        );
+
+        $careerHighlights = HomepageSection::where('section_key', 'career_highlights')->first();
+
+        $banners = HomepageSection::where('section_key', 'beyond')
+            ->orWhere(function ($q) {
+                $q->whereNotIn('section_key', ['hero', 'career_highlights']);
+            })
+            ->orderBy('sort_order')
+            ->get();
+
         return view('admin.homepage.index', [
-            'title' => 'Homepage Management',
+            'title' => 'Hero & Banners',
+            'hero' => $hero,
+            'careerHighlights' => $careerHighlights,
+            'banners' => $banners,
             'sections' => HomepageSection::whereIn('section_key', array_keys(config('homepage')))
                 ->orderBy('sort_order')->orderBy('section_key')->get(),
             'definitions' => config('homepage'),
@@ -101,18 +129,28 @@ class HomepageSectionController extends Controller
 
         $cleaned = $this->removeFiles($oldPaths);
 
-        return redirect()->route('admin.homepage.edit', $homepageSection)
-            ->with('status', 'Homepage section saved. Changes are live.')
+        return redirect()->route('admin.homepage.index')
+            ->with('status', 'Hero & Banners section saved. Changes are live.')
             ->with('warning', $cleaned ? null : 'Content saved, but an unused old image could not be removed. Please contact the site maintainer.');
     }
 
-    public function toggle(HomepageSection $homepageSection): RedirectResponse
+    public function toggle(HomepageSection $homepageSection): RedirectResponse|JsonResponse
     {
         abort_unless(array_key_exists($homepageSection->section_key, config('homepage')), 404);
-        DB::transaction(function () use ($homepageSection): void {
+        $isActive = DB::transaction(function () use ($homepageSection): bool {
             $section = HomepageSection::whereKey($homepageSection->id)->lockForUpdate()->firstOrFail();
             $section->update(['is_active' => ! $section->is_active]);
+
+            return (bool) $section->is_active;
         });
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => $isActive,
+                'message' => $isActive ? 'Published live on homepage.' : 'Unpublished and hidden from homepage.',
+            ]);
+        }
 
         return back()->with('status', 'Section visibility updated.');
     }

@@ -1,14 +1,98 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="mb-9 flex flex-wrap items-end justify-between gap-5"><div><p class="text-xs uppercase tracking-[.2em] text-forest/60 mb-3">The bigger picture</p><h1 class="text-3xl sm:text-4xl font-serif text-forest">Your website, at a glance.</h1><p class="mt-3 text-sm text-slate-500 leading-6">Welcome, {{ auth()->user()->name }}. This is the home of your digital presence.</p></div><a href="{{ route('home') }}" class="border border-forest/20 rounded-lg bg-white px-5 py-3 text-sm text-forest hover:border-forest">Preview website ↗</a></div>
-<div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
-    @foreach($metrics as $metric)
-        <a href="{{ route('admin.modules.show', $metric['module']) }}" class="block bg-white border border-forest/10 rounded-xl p-6 hover:border-gold transition-colors"><div class="flex justify-between items-center"><h2 class="text-sm font-medium text-slate-600">{{ $metric['label'] }}</h2><span class="text-gold" aria-hidden="true">↗</span></div><p class="mt-6 {{ $metric['value'] === null ? 'text-xl text-slate-400' : 'text-4xl text-forest' }} font-serif">{{ $metric['value'] === null ? 'Not configured' : number_format($metric['value']) }}</p><p class="mt-3 text-xs text-slate-500">{{ $metric['value'] === null ? 'Content storage will be introduced in Phase 3.' : 'Current database count' }}</p></a>
-    @endforeach
+<div class="mb-8">
+    <p class="text-xs uppercase tracking-[.2em] text-forest/60 mb-2 font-medium">Administration</p>
+    <h1 class="text-3xl sm:text-4xl font-serif text-forest">Website Management Studio</h1>
+    <p class="mt-2 text-sm text-slate-500 leading-6">Welcome, {{ auth()->user()->name }}. Manage all dynamic content of the homepage and about page from the sidebar.</p>
 </div>
-<div class="grid xl:grid-cols-[1.6fr_1fr] gap-6 mt-8">
-    <section class="bg-white border border-forest/10 rounded-xl overflow-hidden"><div class="p-6 border-b border-forest/10 flex items-center justify-between gap-4"><h2 class="font-serif text-xl text-forest">Workspace readiness</h2><span class="text-xs text-forest bg-forest/5 px-3 py-1.5 rounded-full">Administration</span></div><div class="overflow-x-auto"><table class="w-full text-sm text-left"><caption class="sr-only">Development status of website features</caption><thead class="text-xs uppercase tracking-wider text-slate-500 bg-ivory/60"><tr><th scope="col" class="px-6 py-4">Area</th><th scope="col" class="px-6 py-4">Status</th></tr></thead><tbody class="divide-y divide-forest/10"><tr><td class="px-6 py-5">Public homepage</td><td class="px-6 py-5 text-forest">Design implemented</td></tr><tr><td class="px-6 py-5">Admin authentication</td><td class="px-6 py-5 text-forest">Active</td></tr><tr><td class="px-6 py-5">Content management</td><td class="px-6 py-5 text-slate-500">Active</td></tr><tr><td class="px-6 py-5">Media uploads & messages</td><td class="px-6 py-5 text-slate-500">Active</td></tr></tbody></table></div></section>
-    <section class="bg-forest text-white rounded-xl p-7 flex flex-col justify-between"><div><p class="text-xs uppercase tracking-[.18em] text-gold">A considered next step</p><h2 class="font-serif text-3xl leading-tight mt-6">Ready for the<br>stories ahead.</h2><p class="mt-5 text-sm text-white/70 leading-7">All website content modules, contact messages and account settings are available in your workspace.</p></div><a href="{{ route('admin.homepage.index') }}" class="mt-8 border-t border-white/20 pt-5 text-sm text-gold">Explore homepage management ↗</a></section>
+
+<!-- Quick Statistics -->
+<div class="mb-8">
+    <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-4">Active Content Overview</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        @foreach($metrics as $metric)
+            <a href="{{ route($metric['route']) }}" class="block bg-white border border-forest/10 rounded-xl p-5 hover:border-gold hover:shadow-sm transition-all group">
+                <div class="flex justify-between items-center text-xs text-slate-500">
+                    <span class="group-hover:text-forest transition-colors font-medium">{{ $metric['label'] }}</span>
+                    <span class="text-gold group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">↗</span>
+                </div>
+                <p class="mt-3 text-3xl text-forest font-serif">{{ number_format($metric['value']) }}</p>
+            </a>
+        @endforeach
+    </div>
+</div>
+
+<!-- Page Architecture Breakdown -->
+<div class="bg-white border border-forest/10 rounded-xl overflow-hidden shadow-xs">
+    <div class="p-6 border-b border-forest/10 flex items-center justify-between gap-4">
+        <div>
+            <h2 class="font-serif text-xl text-forest">Page Content Mapping</h2>
+            <p class="text-xs text-slate-500 mt-1">Direct breakdown of which module controls which public page section.</p>
+        </div>
+        <span class="text-xs text-forest bg-forest/5 px-3 py-1.5 rounded-full font-medium">Page-Centric Architecture</span>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
+            <thead class="text-xs uppercase tracking-wider text-slate-500 bg-ivory/60 border-b border-forest/10">
+                <tr>
+                    <th scope="col" class="px-6 py-3.5">Target Page</th>
+                    <th scope="col" class="px-6 py-3.5">Section Name</th>
+                    <th scope="col" class="px-6 py-3.5">Editor Link</th>
+                    <th scope="col" class="px-6 py-3.5">Public Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-forest/10">
+                <tr>
+                    <td class="px-6 py-4 font-semibold text-forest">Homepage</td>
+                    <td class="px-6 py-4 text-slate-600">Hero Banner & Highlights</td>
+                    <td class="px-6 py-4"><a href="{{ route('admin.homepage.index') }}" class="font-medium text-forest underline hover:text-gold">Edit Hero & Highlights →</a></td>
+                    <td class="px-6 py-4 text-emerald-700 font-medium">● Live</td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-4 font-semibold text-forest">Homepage</td>
+                    <td class="px-6 py-4 text-slate-600">Tournament Schedule</td>
+                    <td class="px-6 py-4"><a href="{{ route('admin.tournaments.index') }}" class="font-medium text-forest underline hover:text-gold">Manage Tournaments →</a></td>
+                    <td class="px-6 py-4 text-emerald-700 font-medium">● Live</td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-4 font-semibold text-forest">Homepage</td>
+                    <td class="px-6 py-4 text-slate-600">Coaching & Pro Tips</td>
+                    <td class="px-6 py-4"><a href="{{ route('admin.coaching.index') }}" class="font-medium text-forest underline hover:text-gold">Manage Tips →</a></td>
+                    <td class="px-6 py-4 text-emerald-700 font-medium">● Live</td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-4 font-semibold text-forest">Homepage</td>
+                    <td class="px-6 py-4 text-slate-600">Photos & Videos Gallery</td>
+                    <td class="px-6 py-4"><a href="{{ route('admin.photos.index') }}" class="font-medium text-forest underline hover:text-gold">Manage Gallery →</a></td>
+                    <td class="px-6 py-4 text-emerald-700 font-medium">● Live</td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-4 font-semibold text-forest">Homepage</td>
+                    <td class="px-6 py-4 text-slate-600">Sponsors & Partners</td>
+                    <td class="px-6 py-4"><a href="{{ route('admin.sponsors.index') }}" class="font-medium text-forest underline hover:text-gold">Manage Sponsors →</a></td>
+                    <td class="px-6 py-4 text-emerald-700 font-medium">● Live</td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-4 font-semibold text-forest">About Page</td>
+                    <td class="px-6 py-4 text-slate-600">Biography, Personal Facts & Career Story</td>
+                    <td class="px-6 py-4"><a href="{{ route('admin.biography.edit') }}" class="font-medium text-forest underline hover:text-gold">Edit Biography →</a></td>
+                    <td class="px-6 py-4 text-emerald-700 font-medium">● Live</td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-4 font-semibold text-forest">About Page</td>
+                    <td class="px-6 py-4 text-slate-600">Key Achievements & Trophies</td>
+                    <td class="px-6 py-4"><a href="{{ route('admin.achievements.index') }}" class="font-medium text-forest underline hover:text-gold">Manage Achievements →</a></td>
+                    <td class="px-6 py-4 text-emerald-700 font-medium">● Live</td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-4 font-semibold text-slate-500">Global</td>
+                    <td class="px-6 py-4 text-slate-600">Header, Footer, Logo & Social Links</td>
+                    <td class="px-6 py-4"><a href="{{ route('admin.settings.edit') }}" class="font-medium text-forest underline hover:text-gold">Website Settings →</a></td>
+                    <td class="px-6 py-4 text-emerald-700 font-medium">● Live</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 @endsection

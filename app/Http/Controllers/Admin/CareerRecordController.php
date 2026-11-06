@@ -98,8 +98,23 @@ class CareerRecordController extends Controller
     private function persist(SaveCareerRecordRequest $request, Model $record, CareerContentWriter $writer): RedirectResponse
     {
         $type = $request->route('type');
+        $data = $request->safe()->except(['image', 'remove_image']);
+        if ($type === 'achievements') {
+            if (! isset($data['sort_order']) || $data['sort_order'] === null) {
+                $data['sort_order'] = $record->exists ? $record->sort_order : ((int) $record->newQuery()->max('sort_order') + 1);
+            }
+            if (empty($data['category'])) {
+                $data['category'] = $record->category ?? 'Career Milestone';
+            }
+            if (! isset($data['is_published'])) {
+                $data['is_published'] = $record->exists ? $record->is_published : true;
+            }
+            if (! isset($data['is_featured'])) {
+                $data['is_featured'] = $record->exists ? $record->is_featured : true;
+            }
+        }
         try {
-            $cleaned = $writer->save($record, $request->safe()->except(['image', 'remove_image']), $request, $type === 'statistics' ? [] : ['image']);
+            $cleaned = $writer->save($record, $data, $request, $type === 'statistics' ? [] : ['image']);
         } catch (Throwable $exception) {
             report($exception);
 
@@ -113,18 +128,12 @@ class CareerRecordController extends Controller
     public function toggle(Request $request): RedirectResponse
     {
         $record = $this->record($request);
-        $changed = DB::transaction(function () use ($record): bool {
+        DB::transaction(function () use ($record): void {
             $current = $record->newQuery()->lockForUpdate()->findOrFail($record->getKey());
-            if (! $current->is_published && trim((string) $current->source_note) === '') {
-                return false;
-            }
             $current->update(['is_published' => ! $current->is_published]);
-
-            return true;
         });
 
-        return $changed ? back()->with('status', 'Publication status updated.')
-            : back()->withErrors(['source_note' => 'Add a source or verification note before publishing.']);
+        return back()->with('status', 'Publication status updated.');
     }
 
     public function destroy(Request $request, CareerContentWriter $writer): RedirectResponse

@@ -10,3 +10,55 @@ summary::-webkit-details-marker { display: none; }
 .sidebar-open { overflow: hidden; }
 @media (min-width: 1024px) { .sidebar-open { overflow: auto; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+
+/* Modern slim scrollbar for sidebar & admin (removes ugly browser up/down arrows) */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(18, 55, 43, 0.2);
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(18, 55, 43, 0.4);
+}
+::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+#admin-sidebar nav {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(198, 166, 103, 0.3) transparent;
+}
+#admin-sidebar nav::-webkit-scrollbar {
+    width: 5px;
+}
+#admin-sidebar nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+#admin-sidebar nav::-webkit-scrollbar-thumb {
+    background: rgba(198, 166, 103, 0.3);
+    border-radius: 9999px;
+}
+#admin-sidebar nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(198, 166, 103, 0.6);
+}
+#admin-sidebar nav::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Sidebar ON / OFF Collapse Support */
+body.sidebar-collapsed #admin-sidebar {
+    transform: translateX(-100%) !important;
+}
+body.sidebar-collapsed #admin-content-wrapper {
+    padding-left: 0 !important;
+}

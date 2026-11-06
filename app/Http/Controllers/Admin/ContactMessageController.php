@@ -20,7 +20,7 @@ class ContactMessageController extends Controller
             $f['status'] === 'unread' ? $q->whereNull('read_at') : $q->whereNotNull('read_at');
         }
 
-return view('admin.messages.index', ['title' => 'Contact Messages', 'messages' => $q->latest()->orderByDesc('id')->paginate(20)->withQueryString()]);
+        return view('admin.messages.index', ['title' => 'Contact Messages', 'messages' => $q->latest()->orderByDesc('id')->paginate(20)->withQueryString()]);
     }
 
     public function show(ContactMessage $message): View
@@ -40,6 +40,6 @@ return view('admin.messages.index', ['title' => 'Contact Messages', 'messages' =
     {
         $message->delete();
 
-        return redirect()->route('admin.messages.index')->with('status','Message deleted.');
+        return redirect()->route('admin.messages.index')->with('status', 'Message deleted.');
     }
 }

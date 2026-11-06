@@ -19,6 +19,6 @@ class UpdateWebsiteSettingRequest extends FormRequest
             $rules['social_links.'.$key] = ['nullable', 'string', 'max:2048', new SafeWebUrl];
         }
 
-return $rules;
+        return $rules;
     }
 }

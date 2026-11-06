@@ -13,31 +13,28 @@ class DashboardController extends Controller
     {
         $metrics = [];
         foreach ([
-            'news' => ['Total News', 'articles'],
-            'tournaments' => ['Total Tournaments', 'tournaments'],
-            'photos' => ['Total Photos', 'photos'],
-            'videos' => ['Total Videos', 'videos'],
-            'sponsors' => ['Total Sponsors', 'sponsors'],
-            'messages' => ['Unread Contact Messages', 'contact_messages'],
-            'social-works' => ['Social Projects', 'social_works'],
-            'equipment' => ['Equipment Records', 'equipment'],
-            'coaching' => ['Coaching Tips', 'coaching_tips'],
-            'users' => ['User Accounts', 'users'],
-        ] as $module => [$label, $table]) {
+            'homepage' => ['Hero & Banners', 'homepage_sections', 'admin.homepage.index'],
+            'achievements' => ['Key Achievements', 'achievements', 'admin.achievements.index'],
+            'tournaments' => ['Tournaments', 'tournaments', 'admin.tournaments.index'],
+            'coaching' => ['Coaching & Tips', 'coaching_tips', 'admin.coaching.index'],
+            'photos' => ['Gallery Photos', 'photos', 'admin.photos.index'],
+            'videos' => ['Gallery Videos', 'videos', 'admin.videos.index'],
+            'sponsors' => ['Sponsors', 'sponsors', 'admin.sponsors.index'],
+            'messages' => ['Unread Messages', 'contact_messages', 'admin.messages.index'],
+            'users' => ['Admin Users', 'users', 'admin.users.index'],
+        ] as $key => [$label, $table, $route]) {
             $configured = Schema::hasTable($table);
             $query = $configured ? DB::table($table) : null;
 
-            if ($module === 'messages' && $configured) {
-                $configured = Schema::hasColumn($table, 'read_at');
-                if ($configured) {
-                    $query->whereNull('read_at');
-                }
+            if ($key === 'messages' && $configured && Schema::hasColumn($table, 'read_at')) {
+                $query->whereNull('read_at');
             }
 
             $metrics[] = [
                 'label' => $label,
-                'module' => $module,
-                'value' => $configured ? $query->count() : null,
+                'key' => $key,
+                'route' => $route,
+                'value' => $configured ? $query->count() : 0,
             ];
         }
 

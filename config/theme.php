@@ -10,7 +10,7 @@ return [
         'forest' => '#0D2216',        // Deep Forest Green (Header, Hero, Gallery, Contact, Footer)
         'forest_deep' => '#0A1B11',   // Deepest Footer Green
         'forest_panel' => '#18291D',  // Contact Section Dark Green
-        'forest_gallery' => '#132519',// Gallery Section Dark Green
+        'forest_gallery' => '#132519', // Gallery Section Dark Green
         'accent_green' => '#14422B',  // Primary Green Buttons & Accents
         'dark_btn' => '#122A1D',      // Dark Green Pill Buttons on Light Sections
         'cream' => '#F7F5EE',         // Warm Off-White / Cream (Highlights, Achievements, Sponsors)
@@ -176,4 +176,3 @@ return [
         ],
     ],
 ];
-

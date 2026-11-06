@@ -75,6 +75,6 @@ class PhotoAlbumController extends Controller
             return back()->withErrors(['delete' => 'Album could not be deleted.']);
         }
 
-        return redirect()->route('admin.photo-albums.index')->with('status', 'Album and its photos deleted. Shared files were preserved.')->with('warning',$ok ? null : 'An unused file could not be removed.');
+        return redirect()->route('admin.photo-albums.index')->with('status', 'Album and its photos deleted. Shared files were preserved.')->with('warning', $ok ? null : 'An unused file could not be removed.');
     }
 }

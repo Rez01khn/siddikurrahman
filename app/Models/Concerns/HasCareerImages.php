@@ -16,8 +16,26 @@ trait HasCareerImages
     public function imageUrl(string $field = 'image'): ?string
     {
         $path = $this->getAttribute($field);
+        if (! is_string($path) || trim($path) === '') {
+            return null;
+        }
 
-        return static::managedCareerImage($path) && Storage::disk('public')->exists($path)
-            ? asset('storage/'.$path) : null;
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (static::managedCareerImage($path) && Storage::disk('public')->exists($path)) {
+            return asset('storage/'.$path);
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            return asset('storage/'.$path);
+        }
+
+        if (file_exists(public_path($path))) {
+            return asset($path);
+        }
+
+        return null;
     }
 }

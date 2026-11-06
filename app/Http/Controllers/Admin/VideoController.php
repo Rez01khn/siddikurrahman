@@ -75,6 +75,6 @@ class VideoController extends Controller
             return back()->withErrors(['delete' => 'Video could not be deleted.']);
         }
 
-        return redirect()->route('admin.videos.index')->with('status', 'Video deleted. Shared thumbnails were preserved.')->with('warning',$ok ? null : 'An unused file could not be removed.');
+        return redirect()->route('admin.videos.index')->with('status', 'Video deleted. Shared thumbnails were preserved.')->with('warning', $ok ? null : 'An unused file could not be removed.');
     }
 }

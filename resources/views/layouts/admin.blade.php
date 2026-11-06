@@ -3,7 +3,7 @@
 @section('body')
     <button id="sidebar-backdrop" class="fixed inset-0 z-40 bg-black/50 lg:hidden" aria-label="Close navigation" hidden></button>
     <x-admin.sidebar />
-    <div class="lg:pl-72 min-h-screen">
+    <div id="admin-content-wrapper" class="lg:pl-72 min-h-screen transition-all duration-300">
         <x-admin.topbar :title="$title" />
         <main id="admin-main" class="p-5 sm:p-8 lg:p-10 max-w-[1600px] mx-auto">
             @yield('content')
